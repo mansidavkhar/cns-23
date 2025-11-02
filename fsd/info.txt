@@ -57,3 +57,59 @@ NotificationContext.jsx (useNotification)
 What it does: Manages a simple pop-up notification message.
 How it's used: Provides a showNotification() function that any component can call to make a message appear on the screen.
 Used in: App.jsx (to render the Notification component), ProductsPage.jsx (to show "Item Added!"), ProfilePage.jsx (to show "Profile Saved!").
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Your REAL App.jsx file should look like this
+
+import React, { useState } from 'react';
+
+// Import pages from their own files
+import HomePage from './pages/HomePage';
+import ProductsPage from './pages/ProductsPage';
+import ProfilePage from './pages/ProfilePage';
+import HooksDemoPage from './pages/HooksDemoPage';
+
+// Import components from their own files
+import Header from './components/Header';
+import Notification from './components/Notification';
+
+function App() {
+  const [page, setPage] = useState('home');
+
+  const renderPage = () => {
+    switch (page) {
+      case 'home':
+        return <HomePage />;
+      // ...etc
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 font-sans">
+      <Header setPage={setPage} />
+      <main className="container mx-auto p-4 md:p-8">
+        {renderPage()}
+      </main>
+      <Notification />
+      {/* ...footer */}
+    </div>
+  );
+}
+
+export default App;
