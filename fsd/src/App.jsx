@@ -341,7 +341,7 @@ function Header({ setPage }) {
         </div>
         <div className="flex items-center gap-4">
           <button
-            onClick={() => setPage('products')}
+            onClick={() => setPage('cart')}
             className="relative p-2 rounded-full hover:bg-gray-100"
             aria-label="Open cart"
           >
@@ -457,12 +457,12 @@ function HomePage() {
 //==============================================================================
 // PAGE: ProductsPage
 //==============================================================================
-const API_URL = 'https://fakestoreapi.com/products?limit=12';
+const API_URL = 'https://dummyjson.com/recipes?limit=20';
 
 function ProductCard({ product }) {
   const { addItem } = useCart();
   const { showNotification } = useNotification();
-
+  
   const handleAddToCart = () => {
     addItem(product);
     showNotification(`${product.title} added to cart!`, 'success');
@@ -476,11 +476,11 @@ function ProductCard({ product }) {
         className="w-full h-48 object-contain p-4 border-b"
       />
       <div className="p-4 flex flex-col flex-grow">
-        <h3 className="text-sm font-semibold text-gray-700 truncate mb-2">
-          {product.title}
+        <h3 className="text-sm font-semibold text-gray-700 truncate mb-2" title={product.name}>
+          {product.name}
         </h3>
         <p className="text-lg font-bold text-gray-900 mb-4">
-          ${product.price.toFixed(2)}
+          Rating: {product.rating.toFixed(1)}
         </p>
         <button
           onClick={handleAddToCart}
@@ -494,7 +494,7 @@ function ProductCard({ product }) {
 }
 
 function ProductsPage() {
-  const { data: products, loading, error } = useFetch(API_URL);
+  const { data, loading, error } = useFetch(API_URL);
 
   if (loading) {
     return (
@@ -518,11 +518,71 @@ function ProductsPage() {
     <div>
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Products</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products &&
-          products.map((product) => (
+        {data &&
+          data.recipes.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
       </div>
+    </div>
+  );
+}
+
+//==============================================================================
+// PAGE: CartPage (Placeholder)
+//==============================================================================
+function CartPage() {
+  const { cart, removeItem, updateQuantity, clearCart } = useCart();
+
+  if (cart.length === 0) {
+    return (
+      <div className="text-center bg-white p-8 rounded-lg shadow-md">
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">Your Cart is Empty</h1>
+        <p className="text-gray-600">Looks like you haven't added any recipes to your cart yet.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white p-8 rounded-lg shadow-md">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">Your Cart</h1>
+      <div className="space-y-4">
+        {cart.map(item => (
+          <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b pb-4 gap-4">
+            <div className="flex items-center gap-4">
+              <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-md" />
+              <div>
+                <span className="font-semibold text-lg">{item.name}</span>
+                <p className="text-sm text-gray-500">Rating: {item.rating.toFixed(1)}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                className="px-2 py-1 border rounded-md hover:bg-gray-100"
+                aria-label="Decrease quantity"
+              >
+                -
+              </button>
+              <input
+                type="number"
+                value={item.quantity}
+                onChange={(e) => updateQuantity(item.id, parseInt(e.target.value, 10) || 1)}
+                className="w-12 text-center border rounded-md"
+                aria-label="Item quantity"
+              />
+              <button 
+                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                className="px-2 py-1 border rounded-md hover:bg-gray-100"
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
+              <button onClick={() => removeItem(item.id)} className="ml-4 text-red-500 hover:text-red-700 font-semibold">Remove</button>
+            </div>
+          </div>
+        ))}
+      </div>
+      <button onClick={clearCart} className="mt-6 w-full bg-red-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-600 transition-colors">Clear Cart</button>
     </div>
   );
 }
@@ -691,6 +751,8 @@ function App() {
         return <HomePage />;
       case 'products':
         return <ProductsPage />;
+      case 'cart':
+        return <CartPage />;
       case 'profile':
         return <ProfilePage />;
       case 'hooks':
@@ -715,4 +777,3 @@ function App() {
 }
 
 export default App;
-

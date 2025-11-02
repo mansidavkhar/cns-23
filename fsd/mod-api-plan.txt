@@ -1,0 +1,64 @@
+3-Step Plan to Adapt Boilerplate for Any API
+
+This plan assumes you are editing the ProductsPage section (around line 484) in your App.jsx file.
+
+
+Step 1: Update the API URL
+
+Paste the new API URL (e.g., https://api.exam.com/data) from your exam into your browser to see the JSON data.
+
+Find const API_URL = ... (line 484) and replace the old URL with the new one.
+
+
+
+Step 2: Fix the .map() Loop (To Prevent Crashing)
+
+Look at the JSON in your browser from Step 1.
+
+If the JSON starts with [ (an array):
+Your data is in recipeData (or whatever you named it).
+
+Change the .map() line (around line 546) to:
+{recipeData && recipeData.map((item) => (
+  <RecipeCard key={item.id} recipe={item} />
+))}
+
+If the JSON starts with { (an object):
+Your array is inside that object. Find its key (e.g., "recipes", "products", "results").
+
+Change the .map() line (around line 546) to use that key:
+{recipeData && recipeData.recipes && recipeData.recipes.map((recipe) => (
+  <RecipeCard key={recipe.id} recipe={recipe} />
+))}
+(This example assumes the key is "recipes")
+
+
+
+
+Step 3: Update the Card Component (To Display Data)
+
+Go to your RecipeCard component (around line 487).
+
+Look at the property names (keys) from the API data (e.g., "name", "image", "cuisine").
+
+Change the component to use the new keys.
+
+Change Image:
+
+Find: <img src={imageUrl} ... />
+
+Change to: <img src={recipe.image} alt={recipe.name} ... />
+
+Change Title:
+
+Find: <h3>{...}</h3>
+
+Change to: <h3>{recipe.name}</h3>
+
+Update/Add Other Data:
+
+Change: <p>{...}</p>
+
+To: <p>{recipe.cuisine} Cuisine</p>
+
+Repeat Step 3 until your card shows all the required information.
