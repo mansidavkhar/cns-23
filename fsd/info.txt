@@ -1,0 +1,59 @@
+Here is a short explanation for each of the key files and concepts in the boilerplate code.
+
+
+1. Custom Hooks (/hooks)
+
+Custom hooks are reusable functions that start with "use". They let you extract component logic into reusable pieces.
+
+useFetch.js
+What it does: Fetches data from any given URL.
+How it's used: It handles all the loading, error, and data states for you.
+Example: const { data, loading, error } = useFetch('https://api.example.com/data');
+Used in: ProductsPage.jsx (to get the products).
+
+useLocalStorage.js
+What it does: A "useState" that remembers its value even after you refresh the page by saving the data to the browser's local storage.
+How it's used: Exactly like useState, but you give it a "key" to save under.
+Example: const [name, setName] = useLocalStorage('username', 'Guest');
+Used in: HooksDemoPage.jsx and ProfilePage.jsx (to remember the user's name).
+
+useWindowSize.js
+What it does: Tracks the browser window's current width and height.
+How it's used: It automatically updates whenever the user resizes their window. This is great for responsive designs.
+Example: const { width, height } = useWindowSize();
+Used in: HooksDemoPage.jsx.
+
+useToggle.js
+What it does: Manages a simple boolean (true/false) state.
+How it's used: Gives you a state value and a function to easily flip it from true to false (or vice-versa).
+Example: const [isOpen, toggleIsOpen] = useToggle(false);
+Used in: HooksDemoPage.jsx (for the "Show/Hide" button).
+
+
+
+
+
+2. Context APIs (/contexts)
+
+Context provides a way to pass data deep into the component tree without having to pass props down manually at every level. It's used for "global" state.
+
+
+Each context has two parts:
+
+The Provider (AuthProvider, CartProvider...): You wrap this around your entire app (in main.jsx). It "provides" the state to all children.
+The Hook (useAuth, useCart...): You use this hook inside any component that needs to read or change that global state.
+
+AuthContext.jsx (useAuth)
+What it does: Manages the currently logged-in user.
+How it's used: Provides the user object, an isAuthenticated boolean, and login() / logout() functions to any component.
+Used in: Header.jsx, ProfilePage.jsx, HomePage.jsx.
+
+CartContext.jsx (useCart)
+What it does: Manages the shopping cart state (a list of products).
+How it's used: Provides the cart array and functions like addItem(), removeItem(), and clearCart().
+Used in: Header.jsx (to show the cart count), ProductsPage.jsx (to add items).
+
+NotificationContext.jsx (useNotification)
+What it does: Manages a simple pop-up notification message.
+How it's used: Provides a showNotification() function that any component can call to make a message appear on the screen.
+Used in: App.jsx (to render the Notification component), ProductsPage.jsx (to show "Item Added!"), ProfilePage.jsx (to show "Profile Saved!").
